@@ -51,7 +51,7 @@ class TestApp:
             assert response_data['id'] == restaurant.id
             assert response_data['name'] == restaurant.name
             assert response_data['address'] == restaurant.address
-            assert 'restaurant_pizzas' in response
+            assert 'restaurant_pizzas' in response_data
 
     def test_returns_404_if_no_restaurant_to_get(self):
         '''returns an error message and 404 status code with GET request to /restaurants/<int:id> by a non-existent ID.'''
@@ -60,8 +60,7 @@ class TestApp:
             response = app.test_client().get('/restaurants/0')
             assert response.status_code == 404
             assert response.content_type == 'application/json'
-            assert response.json.get('error')
-            assert response.status_code == 404
+            assert response.json == {"error": "Not found"}
 
     def test_deletes_restaurant_by_id(self):
         '''deletes restaurant with DELETE request to /restaurants/<int:id>.'''
@@ -88,7 +87,7 @@ class TestApp:
             response = app.test_client().get('/restaurants/0')
             assert response.status_code == 404
             assert response.content_type == 'application/json'
-            assert response.json.get('error') == "Restaurant not found"
+            assert response.json == {"error": "Not found"}
 
     def test_pizzas(self):
         """retrieves pizzas with GET request to /pizzas"""

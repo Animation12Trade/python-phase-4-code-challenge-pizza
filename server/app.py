@@ -66,6 +66,10 @@ def create_restaurant_pizza():
     db.session.commit()
     return jsonify(restaurant_pizza.as_dict()), 201
 
+@app.errorhandler(404)
+def not_found(error):
+    return jsonify({"error": "Not found"}), 404
+
 
 if __name__ == "__main__":
     app.run(port=5555, debug=True)
