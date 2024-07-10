@@ -4,7 +4,6 @@ from flask_migrate import Migrate
 from flask import Flask, request
 from flask_restful import Api, Resource
 import os
-from sqlalchemy.orm import Session
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 DATABASE = os.environ.get("DB_URI", f"sqlite:///{os.path.join(BASE_DIR, 'app.db')}")
@@ -34,11 +33,10 @@ api.add_resource(RestaurantList, '/restaurants')
 # Route for getting a specific restaurant by ID
 class RestaurantDetails(Resource):
     def get(self, id):
-        with db.session() as session:
-            restaurant = session.get(Restaurant, id)
-            if restaurant:
-                return restaurant.to_dict(), 200
-            return {"error": "Restaurant not found"}, 404
+        restaurant = db.session.get(Restaurant, id)
+        if restaurant:
+            return restaurant.to_dict(), 200
+        return {"error": "Restaurant not found"}, 404
 
 # Route for deleting a specific restaurant by ID    
     def delete(self, id):
