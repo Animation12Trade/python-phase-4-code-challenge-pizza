@@ -28,7 +28,7 @@ class Restaurant(db.Model, SerializerMixin):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
     # add serialization rules
-    serialize_rules = ('-restaurant_pizzas.restaurant',)
+    serialize_rules = ('-restaurant_pizzas.restaurant', '-restaurant_pizzas.pizza.restaurant_pizzas')
 
     def __repr__(self):
         return f"<Restaurant {self.name}>"
@@ -49,7 +49,7 @@ class Pizza(db.Model, SerializerMixin):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
     # add serialization rules
-    serialize_rules = ('-restaurant_pizzas.pizza',)
+    serialize_rules = ('-restaurant_pizzas.pizza', '-restaurant_pizzas.restaurant.restaurant_pizzas')
 
     def __repr__(self):
         return f"<Pizza {self.name}, {self.ingredients}>"
@@ -68,7 +68,7 @@ class RestaurantPizza(db.Model, SerializerMixin):
     pizza = relationship("Pizza", back_populates="restaurant_pizzas")
 
     # add serialization rules
-    serialize_rules = ('-restaurant.restaurant_pizzas', '-pizza.restaurant_pizzas', 'restaurant', 'pizza')
+    serialize_rules = ('-restaurant.restaurant_pizzas', '-pizza.restaurant_pizzas')
 
     # add validation
     @validates('price')
