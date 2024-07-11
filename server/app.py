@@ -40,11 +40,10 @@ class RestaurantDetails(Resource):
 
 # Route for deleting a specific restaurant by ID    
     def delete(self, id):
-        with db.session() as session:
-            restaurant = session.get(Restaurant, id)
+            restaurant = db.session.get(Restaurant, id)
             if restaurant:
-                session.delete(restaurant)
-                session.commit()
+                db.session.delete(restaurant)
+                db.session.commit()
                 return {}, 204
             return {"error": "Restaurant not found"}, 404
         
