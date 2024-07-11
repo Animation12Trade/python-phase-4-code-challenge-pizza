@@ -62,15 +62,18 @@ class RestaurantPizzaList(Resource):
     def post(self):
         data = request.get_json()
         try:
-            new_restaurant_pizza = RestaurantPizza(
+            restaurant_pizza = RestaurantPizza(
                 price=data["price"],
                 pizza_id=data["pizza_id"],
                 restaurant_id=data["restaurant_id"]
             )
-            db.session.add(new_restaurant_pizza)
+            db.session.add(restaurant_pizza)
             db.session.commit()
-            return new_restaurant_pizza.to_dict(), 201
-        except ValueError as e:
+            return restaurant_pizza.to_dict(), 201
+        except ValueError as E:
+
+            # lets revert the changes made to the session since the 
+            # last commit to ensure a clean state.
             db.session.rollback()
             return {"errors": ["validation errors"]}, 400
 
